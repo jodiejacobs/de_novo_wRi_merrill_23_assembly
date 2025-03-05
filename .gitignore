@@ -1,0 +1,12 @@
+# Add the following lines:
+assembly/flye/Analysis/*.sam
+assembly/flye/Analysis/*.bam
+reference_genome/Drosophila_simulans_ref/data/GCF_016746395.2/*.fna
+reference_genome/Drosophila_simulans_ref/data/GCF_016746395.2/*.gff
+assembly/flye/*.fastq.gz
+# Large files excluded from Git
+*.sam
+*.bam
+*.fastq.gz
+reference_genome/Drosophila_simulans_ref/data/GCF_016746395.2/*.fna
+reference_genome/Drosophila_simulans_ref/data/GCF_016746395.2/*.gff
