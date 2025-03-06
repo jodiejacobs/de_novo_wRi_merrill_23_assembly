@@ -1235,3 +1235,278 @@ localrule polish_with_short_reads:
 [M::mem_pestat] skip orientation RR
 [M::mem_process_seqs] Processed 1067540 reads in 336.708 CPU sec, 21.240 real sec
 [M::process] read 1067440 sequences (160000161 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (862, 452351, 54, 821)
+[M::mem_pestat] analyzing insert size distribution for orientation FF...
+[M::mem_pestat] (25, 50, 75) percentile: (246, 426, 1034)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 2610)
+[M::mem_pestat] mean and std.dev: (586.37, 550.40)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 3398)
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (257, 320, 399)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 683)
+[M::mem_pestat] mean and std.dev: (332.15, 98.64)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 825)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (246, 1011, 3555)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 10173)
+[M::mem_pestat] mean and std.dev: (2137.17, 2384.59)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 13482)
+[M::mem_pestat] analyzing insert size distribution for orientation RR...
+[M::mem_pestat] (25, 50, 75) percentile: (257, 420, 1231)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 3179)
+[M::mem_pestat] mean and std.dev: (703.75, 722.69)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 4153)
+[M::mem_pestat] skip orientation FF
+[M::mem_pestat] skip orientation RF
+[M::mem_pestat] skip orientation RR
+[M::mem_process_seqs] Processed 1067520 reads in 333.167 CPU sec, 21.026 real sec
+[M::process] read 1067570 sequences (160000238 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (792, 452193, 64, 814)
+[M::mem_pestat] analyzing insert size distribution for orientation FF...
+[M::mem_pestat] (25, 50, 75) percentile: (233, 401, 1042)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 2660)
+[M::mem_pestat] mean and std.dev: (581.09, 565.09)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 3469)
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (257, 319, 399)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 683)
+[M::mem_pestat] mean and std.dev: (332.16, 98.56)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 825)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (126, 866, 3213)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 9387)
+[M::mem_pestat] mean and std.dev: (1969.17, 2332.33)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 12474)
+[M::mem_pestat] analyzing insert size distribution for orientation RR...
+[M::mem_pestat] (25, 50, 75) percentile: (249, 437, 1192)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 3078)
+[M::mem_pestat] mean and std.dev: (658.03, 653.16)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 4021)
+[M::mem_pestat] skip orientation FF
+[M::mem_pestat] skip orientation RF
+[M::mem_pestat] skip orientation RR
+[M::mem_process_seqs] Processed 1067440 reads in 333.746 CPU sec, 21.042 real sec
+[M::process] read 1067584 sequences (160000120 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (849, 452764, 75, 796)
+[M::mem_pestat] analyzing insert size distribution for orientation FF...
+[M::mem_pestat] (25, 50, 75) percentile: (239, 404, 1128)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 2906)
+[M::mem_pestat] mean and std.dev: (591.35, 577.01)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 3795)
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (257, 320, 399)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 683)
+[M::mem_pestat] mean and std.dev: (332.15, 98.50)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 825)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (171, 1433, 3354)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 9720)
+[M::mem_pestat] mean and std.dev: (1975.65, 2135.68)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 12903)
+[M::mem_pestat] analyzing insert size distribution for orientation RR...
+[M::mem_pestat] (25, 50, 75) percentile: (256, 447, 1156)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 2956)
+[M::mem_pestat] mean and std.dev: (668.56, 660.52)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 3856)
+[M::mem_pestat] skip orientation FF
+[M::mem_pestat] skip orientation RF
+[M::mem_pestat] skip orientation RR
+[M::mem_process_seqs] Processed 1067570 reads in 332.462 CPU sec, 20.947 real sec
+[M::process] read 185378 sequences (27787018 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (847, 452327, 59, 740)
+[M::mem_pestat] analyzing insert size distribution for orientation FF...
+[M::mem_pestat] (25, 50, 75) percentile: (246, 423, 1120)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 2868)
+[M::mem_pestat] mean and std.dev: (635.95, 629.60)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 3742)
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (256, 320, 400)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 688)
+[M::mem_pestat] mean and std.dev: (332.36, 98.83)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 832)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (100, 1401, 3172)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 9316)
+[M::mem_pestat] mean and std.dev: (2007.88, 2080.99)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 12388)
+[M::mem_pestat] analyzing insert size distribution for orientation RR...
+[M::mem_pestat] (25, 50, 75) percentile: (266, 447, 1374)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 3590)
+[M::mem_pestat] mean and std.dev: (758.43, 802.35)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 4698)
+[M::mem_pestat] skip orientation FF
+[M::mem_pestat] skip orientation RF
+[M::mem_pestat] skip orientation RR
+[M::mem_process_seqs] Processed 1067584 reads in 332.065 CPU sec, 20.935 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (126, 78703, 11, 165)
+[M::mem_pestat] analyzing insert size distribution for orientation FF...
+[M::mem_pestat] (25, 50, 75) percentile: (220, 406, 1066)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 2758)
+[M::mem_pestat] mean and std.dev: (622.54, 581.94)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 3604)
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (257, 320, 398)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 680)
+[M::mem_pestat] mean and std.dev: (331.74, 98.25)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 821)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (870, 1396, 4418)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 11514)
+[M::mem_pestat] mean and std.dev: (2099.27, 1842.51)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 15062)
+[M::mem_pestat] analyzing insert size distribution for orientation RR...
+[M::mem_pestat] (25, 50, 75) percentile: (245, 395, 1379)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 3647)
+[M::mem_pestat] mean and std.dev: (759.03, 788.63)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 4781)
+[M::mem_pestat] skip orientation FF
+[M::mem_pestat] skip orientation RF
+[M::mem_pestat] skip orientation RR
+[M::mem_process_seqs] Processed 185378 reads in 58.459 CPU sec, 3.819 real sec
+[main] Version: 0.7.18-r1243-dirty
+[main] CMD: bwa mem -t 16 /private/groups/russelllab/jodie/merrill_23_wRi_genome/flye/merrill_23_all_basecalled/Dsim/assembly.fasta /private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/dsim_R1.fastq.gz /private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/dsim_R2.fastq.gz
+[main] Real time: 1061.002 sec; CPU: 16491.258 sec
+[bam_sort_core] merging from 1 files and 16 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 1067714 sequences (160000067 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (4854, 328737, 82, 4673)
+[M::mem_pestat] analyzing insert size distribution for orientation FF...
+[M::mem_pestat] (25, 50, 75) percentile: (246, 416, 982)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 2454)
+[M::mem_pestat] mean and std.dev: (559.16, 488.87)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 3190)
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (263, 324, 401)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 677)
+[M::mem_pestat] mean and std.dev: (335.92, 96.75)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 815)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (104, 445, 2140)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 6212)
+[M::mem_pestat] mean and std.dev: (1131.89, 1619.26)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 8248)
+[M::mem_pestat] analyzing insert size distribution for orientation RR...
+[M::mem_pestat] (25, 50, 75) percentile: (246, 415, 999)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 2505)
+[M::mem_pestat] mean and std.dev: (570.17, 494.55)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 3258)
+[M::mem_pestat] skip orientation FF
+[M::mem_pestat] skip orientation RF
+[M::mem_pestat] skip orientation RR
+[M::process] read 631502 sequences (94666914 bp)...
+[M::mem_process_seqs] Processed 1067714 reads in 113.267 CPU sec, 8.172 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (2919, 194327, 62, 2796)
+[M::mem_pestat] analyzing insert size distribution for orientation FF...
+[M::mem_pestat] (25, 50, 75) percentile: (250, 413, 1024)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 2572)
+[M::mem_pestat] mean and std.dev: (573.83, 516.22)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 3346)
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (263, 324, 402)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 680)
+[M::mem_pestat] mean and std.dev: (335.91, 96.68)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 819)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (104, 613, 2121)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 6155)
+[M::mem_pestat] mean and std.dev: (1284.51, 1737.24)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 8233)
+[M::mem_pestat] analyzing insert size distribution for orientation RR...
+[M::mem_pestat] (25, 50, 75) percentile: (246, 410, 973)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 2427)
+[M::mem_pestat] mean and std.dev: (556.12, 466.37)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 3154)
+[M::mem_pestat] skip orientation FF
+[M::mem_pestat] skip orientation RF
+[M::mem_pestat] skip orientation RR
+[M::mem_process_seqs] Processed 631502 reads in 70.325 CPU sec, 4.518 real sec
+[main] Version: 0.7.18-r1243-dirty
+[main] CMD: bwa mem -t 16 /private/groups/russelllab/jodie/merrill_23_wRi_genome/flye/merrill_23_all_basecalled/wRi/assembly.fasta /private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/wri_R1.fastq.gz /private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/wri_R2.fastq.gz
+[main] Real time: 14.819 sec; CPU: 185.622 sec
+[bam_sort_core] merging from 0 files and 16 in-memory blocks...
+/usr/bin/bash: line 21: pilon: command not found
+[Thu Mar  6 13:44:17 2025]
+Error in rule polish_with_short_reads:
+    jobid: 0
+    input: /private/groups/russelllab/jodie/merrill_23_wRi_genome/flye/merrill_23_all_basecalled/Dsim/assembly.fasta, /private/groups/russelllab/jodie/merrill_23_wRi_genome/flye/merrill_23_all_basecalled/wRi/assembly.fasta, /private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/wri_R1.fastq.gz, /private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/wri_R2.fastq.gz, /private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/dsim_R1.fastq.gz, /private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/dsim_R2.fastq.gz
+    output: /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/Dsim/assembly.fasta, /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/wRi/assembly.fasta
+    shell:
+        
+        # Create output directories
+        mkdir -p /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/Dsim/
+        mkdir -p /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/wRi/
+        
+        # Index the reference assemblies
+        bwa index /private/groups/russelllab/jodie/merrill_23_wRi_genome/flye/merrill_23_all_basecalled/Dsim/assembly.fasta
+        bwa index /private/groups/russelllab/jodie/merrill_23_wRi_genome/flye/merrill_23_all_basecalled/wRi/assembly.fasta
+        
+        # Align host short reads to host assembly
+        bwa mem -t 16 /private/groups/russelllab/jodie/merrill_23_wRi_genome/flye/merrill_23_all_basecalled/Dsim/assembly.fasta /private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/dsim_R1.fastq.gz /private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/dsim_R2.fastq.gz |             samtools sort -@ 16 -o /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/Dsim//host_sorted.bam
+        
+        samtools index -@ 16 /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/Dsim//host_sorted.bam
+        
+        # Align Wolbachia short reads to Wolbachia assembly
+        bwa mem -t 16 /private/groups/russelllab/jodie/merrill_23_wRi_genome/flye/merrill_23_all_basecalled/wRi/assembly.fasta /private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/wri_R1.fastq.gz /private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/wri_R2.fastq.gz |             samtools sort -@ 16 -o /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/wRi//wolbachia_sorted.bam
+        
+        samtools index -@ 16 /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/wRi//wolbachia_sorted.bam
+        
+        # Polish host assembly with Pilon
+        pilon --genome /private/groups/russelllab/jodie/merrill_23_wRi_genome/flye/merrill_23_all_basecalled/Dsim/assembly.fasta               --frags /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/Dsim//host_sorted.bam               --output pilon_host               --outdir /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/Dsim/               --threads 16               --changes --vcf
+        
+        # Polish Wolbachia assembly with Pilon
+        pilon --genome /private/groups/russelllab/jodie/merrill_23_wRi_genome/flye/merrill_23_all_basecalled/wRi/assembly.fasta               --frags /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/wRi//wolbachia_sorted.bam               --output pilon_wolbachia               --outdir /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/wRi/               --threads 16               --changes --vcf
+              
+        # Move outputs to expected file names
+        mv /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/Dsim//pilon_host.fasta /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/Dsim/assembly.fasta
+        mv /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/wRi//pilon_wolbachia.fasta /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/wRi/assembly.fasta
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Storing output in storage.
+WorkflowError:
+At least one job did not complete successfully.
+srun: error: phoenix-12: task 0: Exited with exit code 1
+[Thu Mar  6 13:44:18 2025]
+Error in rule polish_with_short_reads:
+    jobid: 0
+    input: /private/groups/russelllab/jodie/merrill_23_wRi_genome/flye/merrill_23_all_basecalled/Dsim/assembly.fasta, /private/groups/russelllab/jodie/merrill_23_wRi_genome/flye/merrill_23_all_basecalled/wRi/assembly.fasta, /private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/wri_R1.fastq.gz, /private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/wri_R2.fastq.gz, /private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/dsim_R1.fastq.gz, /private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/dsim_R2.fastq.gz
+    output: /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/Dsim/assembly.fasta, /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/wRi/assembly.fasta
+    shell:
+        
+        # Create output directories
+        mkdir -p /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/Dsim/
+        mkdir -p /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/wRi/
+        
+        # Index the reference assemblies
+        bwa index /private/groups/russelllab/jodie/merrill_23_wRi_genome/flye/merrill_23_all_basecalled/Dsim/assembly.fasta
+        bwa index /private/groups/russelllab/jodie/merrill_23_wRi_genome/flye/merrill_23_all_basecalled/wRi/assembly.fasta
+        
+        # Align host short reads to host assembly
+        bwa mem -t 16 /private/groups/russelllab/jodie/merrill_23_wRi_genome/flye/merrill_23_all_basecalled/Dsim/assembly.fasta /private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/dsim_R1.fastq.gz /private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/dsim_R2.fastq.gz |             samtools sort -@ 16 -o /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/Dsim//host_sorted.bam
+        
+        samtools index -@ 16 /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/Dsim//host_sorted.bam
+        
+        # Align Wolbachia short reads to Wolbachia assembly
+        bwa mem -t 16 /private/groups/russelllab/jodie/merrill_23_wRi_genome/flye/merrill_23_all_basecalled/wRi/assembly.fasta /private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/wri_R1.fastq.gz /private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/wri_R2.fastq.gz |             samtools sort -@ 16 -o /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/wRi//wolbachia_sorted.bam
+        
+        samtools index -@ 16 /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/wRi//wolbachia_sorted.bam
+        
+        # Polish host assembly with Pilon
+        pilon --genome /private/groups/russelllab/jodie/merrill_23_wRi_genome/flye/merrill_23_all_basecalled/Dsim/assembly.fasta               --frags /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/Dsim//host_sorted.bam               --output pilon_host               --outdir /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/Dsim/               --threads 16               --changes --vcf
+        
+        # Polish Wolbachia assembly with Pilon
+        pilon --genome /private/groups/russelllab/jodie/merrill_23_wRi_genome/flye/merrill_23_all_basecalled/wRi/assembly.fasta               --frags /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/wRi//wolbachia_sorted.bam               --output pilon_wolbachia               --outdir /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/wRi/               --threads 16               --changes --vcf
+              
+        # Move outputs to expected file names
+        mv /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/Dsim//pilon_host.fasta /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/Dsim/assembly.fasta
+        mv /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/wRi//pilon_wolbachia.fasta /private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/merrill_23_all_basecalled/wRi/assembly.fasta
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Storing output in storage.
+WorkflowError:
+At least one job did not complete successfully.

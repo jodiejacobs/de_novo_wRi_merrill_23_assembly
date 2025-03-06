@@ -30,12 +30,15 @@ short_read_samples = [
 # Get all the lanes for each sample
 lanes = ["L002", "L003"]
 
-conda: '/private/groups/russelllab/jodie/bootcamp2024/scripts/read_filtering.yaml'   
+# conda: '/private/groups/russelllab/jodie/bootcamp2024/scripts/read_filtering.yaml'   
 
 rule all:
         input:
+            expand('/private/groups/russelllab/jodie/merrill_23_wRi_genome/busco/{sample}/polished/wRi/short_summary.specific.fasta', sample=samples),
             expand('/private/groups/russelllab/jodie/merrill_23_wRi_genome/busco/{sample}/raw/wRi/short_summary.specific.fasta', sample=samples),
-            expand('/private/groups/russelllab/jodie/merrill_23_wRi_genome/busco/{sample}/polished/wRi/short_summary.specific.fasta', sample=samples)
+            # Add new targets for scaffolded and fully polished assemblies
+            expand('/private/groups/russelllab/jodie/merrill_23_wRi_genome/assembly_final/{sample}/wRi_final_polished_circular.fasta', sample=samples),
+            expand('/private/groups/russelllab/jodie/merrill_23_wRi_genome/assembly_final/{sample}/assembly_stats.txt', sample=samples)
 
 rule sort_bam:
     input:
@@ -106,28 +109,313 @@ rule assembly:
             flye --nano-hq {input.host_fastq} -t 16 --out-dir {params.host_dir} --genome-size 180m
             flye --nano-hq {input.wolbachia_fastq} -t 16 --out-dir {params.wolbachia_dir} --genome-size 1.3m
         '''
-
-rule BUSCO:
+rule polish_nanopore_assembly:
     input:
-        host_assembly = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/flye/{sample}/Dsim/assembly.fasta',
         wolbachia_assembly = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/flye/{sample}/wRi/assembly.fasta',
+        nanopore_reads = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/nanopore_data/basecalled/{sample}.wRi.fastq.gz'
     output:
-        host_busco = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/busco/{sample}/raw/Dsim/short_summary.specific.fasta',
-        wolbachia_busco = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/busco/{sample}/raw/wRi/short_summary.specific.fasta',
+        racon_polished = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/{sample}/wRi/racon_polished.fasta',
+        medaka_polished = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/{sample}/wRi/medaka_polished.fasta'
     params:
-        host_busco = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/busco/{sample}/raw/Dsim/',
-        wolbachia_busco = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/busco/{sample}/raw/wRi/',
-    resources: 
+        out_dir = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/{sample}/wRi/'
+    conda:
+        "medaka"  # Define a conda environment specifically for this rule
+    resources:
         mem_mb=100000,
-        runtime=200
-    threads: 16  
+        runtime=60
+    threads: 16
+    shell:
+        '''
+        # Create output directory
+        mkdir -p {params.out_dir}
+        
+        # First round: Map reads back to assembly
+        minimap2 -ax map-ont -t {threads} {input.wolbachia_assembly} {input.nanopore_reads} > {params.out_dir}/mapped.sam
+        
+        # Polish with Racon (3 iterations for better quality)
+        # Iteration 1
+        racon -t {threads} {input.nanopore_reads} {params.out_dir}/mapped.sam {input.wolbachia_assembly} > {params.out_dir}/racon_1.fasta
+        
+        # Iteration 2
+        minimap2 -ax map-ont -t {threads} {params.out_dir}/racon_1.fasta {input.nanopore_reads} > {params.out_dir}/mapped_2.sam
+        racon -t {threads} {input.nanopore_reads} {params.out_dir}/mapped_2.sam {params.out_dir}/racon_1.fasta > {params.out_dir}/racon_2.fasta
+        
+        # Iteration 3
+        minimap2 -ax map-ont -t {threads} {params.out_dir}/racon_2.fasta {input.nanopore_reads} > {params.out_dir}/mapped_3.sam
+        racon -t {threads} {input.nanopore_reads} {params.out_dir}/mapped_3.sam {params.out_dir}/racon_2.fasta > {output.racon_polished}
+        
+        # Further polish with Medaka
+        medaka_consensus -i {input.nanopore_reads} -d {output.racon_polished} -o {params.out_dir}/medaka -t {threads} -m r10_450bps_sup
+        
+        # Move the medaka output to expected location
+        cp {params.out_dir}/medaka/consensus.fasta {output.medaka_polished}
+        '''
+
+rule scaffold_assembly:
+    input:
+        nanopore_polished = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/{sample}/wRi/medaka_polished.fasta',
+        nanopore_reads = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/nanopore_data/basecalled/{sample}.wRi.fastq.gz'
+    output:
+        links_scaffolded = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/scaffolded/{sample}/wRi/links_scaffolded.fasta',
+        sspace_scaffolded = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/scaffolded/{sample}/wRi/sspace_scaffolded.fasta'
+    params:
+        out_dir = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/scaffolded/{sample}/wRi/',
+        links_prefix = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/scaffolded/{sample}/wRi/links',
+        sspace_prefix = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/scaffolded/{sample}/wRi/sspace'
+    resources:
+        mem_mb=100000,
+        runtime=60
+    threads: 16
+    shell:
+        '''
+        # Create output directory
+        mkdir -p {params.out_dir}
+        
+        # Extract reads from gzipped file
+        zcat {input.nanopore_reads} > {params.out_dir}/nanopore_reads.fastq
+        
+        # Approach 1: LINKS scaffolder
+        LINKS -f {input.nanopore_polished} -s {params.out_dir}/nanopore_reads.fastq -b {params.links_prefix} -t 5 -k 19
+        
+        # Move the final LINKS output to expected location
+        cp {params.links_prefix}.scaffolds.fa {output.links_scaffolded}
+        
+        # Approach 2: SSPACE-LongRead
+        perl SSPACE-LongRead.pl -c {input.nanopore_polished} -p {params.out_dir}/nanopore_reads.fastq -b {params.sspace_prefix}
+        
+        # Move the SSPACE output to expected location
+        cp {params.sspace_prefix}.final.scaffolds.fasta {output.sspace_scaffolded}
+        '''
+
+# Rule to combine short-read polishing with the scaffolded assembly
+rule polish_scaffolded_with_short_reads:
+    input:
+        links_scaffolded = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/scaffolded/{sample}/wRi/links_scaffolded.fasta',
+        sspace_scaffolded = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/scaffolded/{sample}/wRi/sspace_scaffolded.fasta',
+        wolbachia_r1 = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/wri_R1.fastq.gz',
+        wolbachia_r2 = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/wri_R2.fastq.gz'
+    output:
+        links_polished = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/polished_scaffolds/{sample}/wRi/links_pilon.fasta',
+        sspace_polished = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/polished_scaffolds/{sample}/wRi/sspace_pilon.fasta'
+    params:
+        out_dir = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/polished_scaffolds/{sample}/wRi/'
+    resources:
+        mem_mb=100000,
+        runtime=60
+    threads: 16
+    shell:
+        '''
+        # Create output directory
+        mkdir -p {params.out_dir}
+        
+        # Index the scaffolded assemblies
+        bwa index {input.links_scaffolded}
+        bwa index {input.sspace_scaffolded}
+        
+        # Map reads to LINKS scaffolds and polish
+        bwa mem -t {threads} {input.links_scaffolded} {input.wolbachia_r1} {input.wolbachia_r2} | \
+            samtools sort -@ {threads} -o {params.out_dir}/links_sorted.bam
+        samtools index -@ {threads} {params.out_dir}/links_sorted.bam
+        
+        pilon --genome {input.links_scaffolded} \
+              --frags {params.out_dir}/links_sorted.bam \
+              --output links_pilon \
+              --outdir {params.out_dir} \
+              --threads {threads} \
+              --changes --vcf
+              
+        # Map reads to sspace scaffolds and polish
+        bwa mem -t {threads} {input.sspace_scaffolded} {input.wolbachia_r1} {input.wolbachia_r2} | \
+            samtools sort -@ {threads} -o {params.out_dir}/sspace_sorted.bam
+        samtools index -@ {threads} {params.out_dir}/sspace_sorted.bam
+        
+        pilon --genome {input.sspace_scaffolded} \
+              --frags {params.out_dir}/sspace_sorted.bam \
+              --output sspace_pilon \
+              --outdir {params.out_dir} \
+              --threads {threads} \
+              --changes --vcf
+        
+        # Rename outputs to match expected paths
+        mv {params.out_dir}/links_pilon.fasta {output.links_polished}
+        mv {params.out_dir}/sspace_pilon.fasta {output.sspace_polished}
+        '''
+
+rule close_gaps:
+    input:
+        links_polished = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/polished_scaffolds/{sample}/wRi/links_pilon.fasta',
+        sspace_polished = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/polished_scaffolds/{sample}/wRi/sspace_pilon.fasta',
+        nanopore_reads = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/nanopore_data/basecalled/{sample}.wRi.fastq.gz'
+    output:
+        links_gapfilled = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/gapfilled/{sample}/wRi/links_gapfilled.fasta',
+        sspace_gapfilled = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/gapfilled/{sample}/wRi/sspace_gapfilled.fasta'
+    params:
+        out_dir = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/gapfilled/{sample}/wRi/'
+    resources:
+        mem_mb=100000,
+        runtime=60
+    threads: 16
+    shell:
+        '''
+        # Create output directory
+        mkdir -p {params.out_dir}
+        
+        # Extract reads for TGS-GapCloser
+        zcat {input.nanopore_reads} > {params.out_dir}/nanopore_reads.fastq
+        
+        # Run TGS-GapCloser on LINKS assembly
+        TGS-GapCloser.sh --scaff {input.links_polished} --reads {params.out_dir}/nanopore_reads.fastq --output {output.links_gapfilled} --thread {threads}
+        
+        # Run TGS-GapCloser on SSPACE assembly
+        TGS-GapCloser.sh --scaff {input.sspace_polished} --reads {params.out_dir}/nanopore_reads.fastq --output {output.sspace_gapfilled} --thread {threads}
+        '''
+
+# Attempt to circularize the bacterial genome
+rule attempt_circularization:
+    input:
+        links_gapfilled = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/gapfilled/{sample}/wRi/links_gapfilled.fasta',
+        sspace_gapfilled = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/gapfilled/{sample}/wRi/sspace_gapfilled.fasta',
+        nanopore_reads = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/nanopore_data/basecalled/{sample}.wRi.fastq.gz'
+    output:
+        final_assembly = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/assembly_final/{sample}/wRi_final_polished_circular.fasta',
+        assembly_stats = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/assembly_final/{sample}/assembly_stats.txt'
+    params:
+        out_dir = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/assembly_final/{sample}/'
+    resources:
+        mem_mb=100000,
+        runtime=240
+    threads: 16
+    shell:
+        '''
+        # Create output directory
+        mkdir -p {params.out_dir}
+        
+        # Use Circlator to attempt to circularize the Wolbachia genome
+        # Try with both assemblies to see which one works better
+        
+        # First try with LINKS assembly
+        circlator all --threads {threads} {input.links_gapfilled} {input.nanopore_reads} {params.out_dir}/circlator_links
+        
+        # Then try with sspace assembly
+        circlator all --threads {threads} {input.sspace_gapfilled} {input.nanopore_reads} {params.out_dir}/circlator_sspace
+        
+        # Check if either assembly was successfully circularized
+        if grep -q "^>" {params.out_dir}/circlator_links/06.fixstart.fasta; then
+            # Use the LINKS-based circularized genome
+            cp {params.out_dir}/circlator_links/06.fixstart.fasta {output.final_assembly}
+            echo "Using LINKS-based circularized genome" >> {output.assembly_stats}
+        elif grep -q "^>" {params.out_dir}/circlator_sspace/06.fixstart.fasta; then
+            # Use the sspace-based circularized genome
+            cp {params.out_dir}/circlator_sspace/06.fixstart.fasta {output.final_assembly}
+            echo "Using sspace-based circularized genome" >> {output.assembly_stats}
+        else
+            # Fall back to the best non-circularized assembly (check contig counts)
+            LINKS_CONTIGS=$(grep -c "^>" {input.links_gapfilled})
+            sspace_CONTIGS=$(grep -c "^>" {input.sspace_gapfilled})
+            
+            if [ $LINKS_CONTIGS -le $sspace_CONTIGS ]; then
+                # LINKS has fewer contigs (or equal), use it
+                cp {input.links_gapfilled} {output.final_assembly}
+                echo "Using LINKS assembly (not circularized). Contigs: $LINKS_CONTIGS" >> {output.assembly_stats}
+            else
+                # sspace has fewer contigs, use it
+                cp {input.sspace_gapfilled} {output.final_assembly}
+                echo "Using sspace assembly (not circularized). Contigs: $sspace_CONTIGS" >> {output.assembly_stats}
+            fi
+        fi
+        
+        # Generate assembly statistics
+        echo "===== Assembly Statistics =====" >> {output.assembly_stats}
+        echo "Date: $(date)" >> {output.assembly_stats}
+        echo "" >> {output.assembly_stats}
+        
+        # Count total contigs
+        echo "Total contigs: $(grep -c "^>" {output.final_assembly})" >> {output.assembly_stats}
+        
+        # Calculate N50, total size, etc.
+        assembly-stats {output.final_assembly} >> {output.assembly_stats}
+        
+        # Check for circularity by looking for overlapping ends
+        echo "" >> {output.assembly_stats}
+        echo "===== Circularity Check =====" >> {output.assembly_stats}
+        
+        # Extract sequences for self-comparison
+        seqtk seq -a {output.final_assembly} > {params.out_dir}/temp.fa
+        
+        # For each contig, check if the start and end regions have overlap
+        for SEQ in $(grep "^>" {params.out_dir}/temp.fa | sed 's/>//'); do
+            echo "Checking circularity of contig: $SEQ" >> {output.assembly_stats}
+            
+            # Extract the sequence
+            seqtk subseq {params.out_dir}/temp.fa <(echo "$SEQ") > {params.out_dir}/single_contig.fa
+            
+            # Get the length
+            LENGTH=$(seqtk comp {params.out_dir}/single_contig.fa | cut -f 2)
+            
+            # Extract first and last 1000 bp (or less if contig is smaller)
+            OVERLAP=1000
+            if [ $LENGTH -lt 2000 ]; then
+                OVERLAP=$(echo "$LENGTH / 4" | bc)
+            fi
+            
+            # Get start and end regions
+            START_SEQ=$(head -n2 {params.out_dir}/single_contig.fa | tail -n1 | cut -c 1-$OVERLAP)
+            END_SEQ=$(head -n2 {params.out_dir}/single_contig.fa | tail -n1 | rev | cut -c 1-$OVERLAP | rev)
+            
+            # Check for overlap
+            echo $START_SEQ > {params.out_dir}/start.fa
+            echo $END_SEQ > {params.out_dir}/end.fa
+            
+            # Calculate similarity
+            IDENTITY=$(dnadiff {params.out_dir}/start.fa {params.out_dir}/end.fa 2>&1 | grep "AvgIdentity" | head -n1 | awk '{{print $2}}')
+            
+            echo "Terminal overlap identity: $IDENTITY%" >> {output.assembly_stats}
+            if (( $(echo "$IDENTITY > 95" | bc -l) )); then
+                echo "Appears to be circular (>95% terminal identity)" >> {output.assembly_stats}
+            else
+                echo "May not be circular (<95% terminal identity)" >> {output.assembly_stats}
+            fi
+            echo "" >> {output.assembly_stats}
+        done
+        
+        # Cleanup
+        rm -f {params.out_dir}/temp.fa {params.out_dir}/single_contig.fa {params.out_dir}/start.fa {params.out_dir}/end.fa
+        '''
+
+rule BUSCO_raw:
+    input:
+        wolbachia_raw = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/flye/{sample}/wRi/assembly.fasta',
+    output:
+        wolbachia_busco = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/busco/{sample}/raw/wRi/short_summary.specific.fasta'
+    params:
+        wolbachia_busco = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/busco/{sample}/raw/wRi/'
+    resources:
+        mem_mb=100000,
+        runtime=60
+    threads: 16
     shell:
         ''' 
-            mkdir -p {params.host_busco}   
             mkdir -p {params.wolbachia_busco}
-            busco -i {input.host_assembly} -o {params.host_busco} -l diptera_odb10 -m genome --cpu 16 
-            busco -i {input.wolbachia_assembly} -o {params.wolbachia_busco} -l rickettsiales_odb10 -m genome --cpu 16
+            busco -i {input.wolbachia_raw} -o {params.wolbachia_busco} -l rickettsiales_odb10 -m genome --cpu 16
         '''
+
+rule BUSCO_polished:
+    input:
+        wolbachia_polished = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/{sample}/wRi/medaka_polished.fasta'
+    output:
+        wolbachia_busco = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/busco/{sample}/polished/wRi/short_summary.specific.fasta'
+    params:
+        wolbachia_busco = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/busco/{sample}/polished/wRi/'
+    resources:
+        mem_mb=100000,
+        runtime=60
+    threads: 16
+    shell:
+        ''' 
+            mkdir -p {params.wolbachia_busco}
+            busco -i {input.wolbachia_polished} -o {params.wolbachia_busco} -l rickettsiales_odb10 -m genome --cpu 16
+        '''
+        
 
 # New rules for short read processing
 
@@ -195,130 +483,4 @@ rule align_short_reads:
         
         # Index the BAM file
         samtools index -@ {threads} {output.bam}
-        '''
-
-rule separate_short_reads:
-    input:
-        bam = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/aligned_to_dsim.bam'
-    output:
-        host_bam = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/dsim.bam',
-        wolbachia_bam = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/wri.bam'
-    resources:
-        mem_mb=10000,
-        runtime=120
-    threads: 8
-    shell:
-        '''
-        # Get mapped reads (host)
-        samtools view -@ {threads} -b -F 4 {input.bam} > {output.host_bam}
-        
-        # Get unmapped reads (wolbachia)
-        samtools view -@ {threads} -b -f 4 {input.bam} > {output.wolbachia_bam}
-        '''
-
-rule short_reads_bam2fastq:
-    input:
-        host_bam = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/dsim.bam',
-        wolbachia_bam = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/wri.bam'
-    output:
-        host_r1 = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/dsim_R1.fastq.gz',
-        host_r2 = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/dsim_R2.fastq.gz',
-        wolbachia_r1 = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/wri_R1.fastq.gz',
-        wolbachia_r2 = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/wri_R2.fastq.gz'
-    resources:
-        mem_mb=20000,
-        runtime=180
-    threads: 8
-    shell:
-        '''
-        # Convert host BAM to FASTQ (paired-end)
-        samtools collate -@ {threads} -O {input.host_bam} | \
-        samtools fastq -@ {threads} -1 {output.host_r1} -2 {output.host_r2} -0 /dev/null -s /dev/null -n
-        
-        # Convert wolbachia BAM to FASTQ (paired-end)
-        samtools collate -@ {threads} -O {input.wolbachia_bam} | \
-        samtools fastq -@ {threads} -1 {output.wolbachia_r1} -2 {output.wolbachia_r2} -0 /dev/null -s /dev/null -n
-        '''
-
-rule polish_with_short_reads:
-    input:
-        host_assembly = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/flye/{sample}/Dsim/assembly.fasta',
-        wolbachia_assembly = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/flye/{sample}/wRi/assembly.fasta',
-        wolbachia_r1 = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/wri_R1.fastq.gz',
-        wolbachia_r2 = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/wri_R2.fastq.gz',
-        host_r1 = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/dsim_R1.fastq.gz',
-        host_r2 = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/short_reads/dsim_R2.fastq.gz'
-    output:
-        host_polished = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/{sample}/Dsim/assembly.fasta',
-        wolbachia_polished = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/{sample}/wRi/assembly.fasta'
-    params:
-        host_dir = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/{sample}/Dsim/',
-        wolbachia_dir = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/{sample}/wRi/'
-    resources:
-        mem_mb=100000,
-        runtime=480
-    threads: 16
-    shell:
-        '''
-        # Create output directories
-        mkdir -p {params.host_dir}
-        mkdir -p {params.wolbachia_dir}
-        
-        # Index the reference assemblies
-        bwa index {input.host_assembly}
-        bwa index {input.wolbachia_assembly}
-        
-        # Align host short reads to host assembly
-        bwa mem -t {threads} {input.host_assembly} {input.host_r1} {input.host_r2} | \
-            samtools sort -@ {threads} -o {params.host_dir}/host_sorted.bam
-        
-        samtools index -@ {threads} {params.host_dir}/host_sorted.bam
-        
-        # Align Wolbachia short reads to Wolbachia assembly
-        bwa mem -t {threads} {input.wolbachia_assembly} {input.wolbachia_r1} {input.wolbachia_r2} | \
-            samtools sort -@ {threads} -o {params.wolbachia_dir}/wolbachia_sorted.bam
-        
-        samtools index -@ {threads} {params.wolbachia_dir}/wolbachia_sorted.bam
-        
-        # Polish host assembly with Pilon
-        pilon --genome {input.host_assembly} \
-              --frags {params.host_dir}/host_sorted.bam \
-              --output pilon_host \
-              --outdir {params.host_dir} \
-              --threads {threads} \
-              --changes --vcf
-        
-        # Polish Wolbachia assembly with Pilon
-        pilon --genome {input.wolbachia_assembly} \
-              --frags {params.wolbachia_dir}/wolbachia_sorted.bam \
-              --output pilon_wolbachia \
-              --outdir {params.wolbachia_dir} \
-              --threads {threads} \
-              --changes --vcf
-              
-        # Move outputs to expected file names
-        mv {params.host_dir}/pilon_host.fasta {output.host_polished}
-        mv {params.wolbachia_dir}/pilon_wolbachia.fasta {output.wolbachia_polished}
-        '''
-
-rule BUSCO_polished:
-    input:
-        host_polished = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/{sample}/Dsim/assembly.fasta',
-        wolbachia_polished = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/polished/{sample}/wRi/assembly.fasta'
-    output:
-        host_busco = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/busco/{sample}/polished/Dsim/short_summary.specific.fasta',
-        wolbachia_busco = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/busco/{sample}/polished/wRi/short_summary.specific.fasta'
-    params:
-        host_busco = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/busco/{sample}/polished/Dsim/',
-        wolbachia_busco = '/private/groups/russelllab/jodie/merrill_23_wRi_genome/busco/{sample}/polished/wRi/'
-    resources:
-        mem_mb=100000,
-        runtime=200
-    threads: 16
-    shell:
-        ''' 
-            mkdir -p {params.host_busco}   
-            mkdir -p {params.wolbachia_busco}
-            busco -i {input.host_polished} -o {params.host_busco} -l diptera_odb10 -m genome --cpu 16 
-            busco -i {input.wolbachia_polished} -o {params.wolbachia_busco} -l rickettsiales_odb10 -m genome --cpu 16
         '''
